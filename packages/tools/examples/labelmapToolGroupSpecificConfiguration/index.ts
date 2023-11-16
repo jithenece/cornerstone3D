@@ -76,32 +76,32 @@ instructions.innerText = `
 `;
 // ============================= //
 
-addToggleButtonToToolbar({
-  title: 'toggle outline rendering',
-  onClick: (toggle) => {
-    let config = segmentation.config.getToolGroupSpecificConfig(toolGroupId2);
+// addToggleButtonToToolbar({
+//   title: 'toggle outline rendering',
+//   onClick: (toggle) => {
+//     let config = segmentation.config.getToolGroupSpecificConfig(toolGroupId2);
 
-    if (config.representations === undefined) {
-      config = {
-        renderInactiveSegmentations: true,
-        representations: {
-          LABELMAP: {
-            renderOutline: toggle,
-          },
-        },
-      };
-    } else {
-      config.representations.LABELMAP.renderOutline = toggle;
-    }
+//     if (config.representations === undefined) {
+//       config = {
+//         renderInactiveSegmentations: true,
+//         representations: {
+//           LABELMAP: {
+//             renderOutline: toggle,
+//           },
+//         },
+//       };
+//     } else {
+//       config.representations.LABELMAP.renderOutline = toggle;
+//     }
 
-    segmentation.config.setToolGroupSpecificConfig(toolGroupId2, config);
+//     segmentation.config.setToolGroupSpecificConfig(toolGroupId2, config);
 
-    const renderingEngine = getRenderingEngine(renderingEngineId);
+//     const renderingEngine = getRenderingEngine(renderingEngineId);
 
-    renderingEngine.renderViewports([viewportId1, viewportId2]);
-  },
-  defaultToggle: true,
-});
+//     renderingEngine.renderViewports([viewportId1, viewportId2]);
+//   },
+//   defaultToggle: true,
+// });
 
 // ============================= //
 
@@ -267,30 +267,115 @@ async function run() {
   );
 
   // // Add the segmentation representations to toolgroup1
-  await segmentation.addSegmentationRepresentations(toolGroupId1, [
-    {
-      segmentationId: segmentationId1,
-      type: csToolsEnums.SegmentationRepresentations.Labelmap,
-    },
-    {
-      segmentationId: segmentationId2,
-      type: csToolsEnums.SegmentationRepresentations.Labelmap,
-    },
-  ]);
+  const segmentationRepresentationToolGroupId1 =
+    await segmentation.addSegmentationRepresentations(toolGroupId1, [
+      {
+        segmentationId: segmentationId1,
+        type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      },
+      {
+        segmentationId: segmentationId2,
+        type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      },
+    ]);
 
   // // Add the segmentation representations to toolgroup2
-  await segmentation.addSegmentationRepresentations(toolGroupId2, [
-    {
-      segmentationId: segmentationId1,
-      type: csToolsEnums.SegmentationRepresentations.Labelmap,
-    },
-    {
-      segmentationId: segmentationId2,
-      type: csToolsEnums.SegmentationRepresentations.Labelmap,
-    },
-  ]);
+  const segmentationRepresentationToolGroupId2 =
+    await segmentation.addSegmentationRepresentations(toolGroupId2, [
+      {
+        segmentationId: segmentationId1,
+        type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      },
+      {
+        segmentationId: segmentationId2,
+        type: csToolsEnums.SegmentationRepresentations.Labelmap,
+      },
+    ]);
 
-  // Render the image
+  // debug the colors of the segmentations
+  console.log(
+    'segmentationRepresentationToolGroupId1',
+    segmentationRepresentationToolGroupId1
+  );
+  let colorValue1ToolGroup1SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId1,
+      segmentationRepresentationToolGroupId1[0],
+      1
+    );
+  let colorValue2ToolGroup1SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId1,
+      segmentationRepresentationToolGroupId1[0],
+      2
+    );
+  let colorValue1ToolGroup2SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId2,
+      segmentationRepresentationToolGroupId2[0],
+      1
+    );
+  let colorValue2ToolGroup2SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId2,
+      segmentationRepresentationToolGroupId2[0],
+      2
+    );
+  console.log(
+    'colors of segmentation representation 1 of toolGroupId1',
+    colorValue1ToolGroup1SegRep1,
+    colorValue2ToolGroup1SegRep1
+  );
+  console.log(
+    'colors of segmentation representation 1 of toolGroupId2',
+    colorValue1ToolGroup2SegRep1,
+    colorValue2ToolGroup2SegRep1
+  );
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  // try setting the value of segmentation representation having label value of 1 to Blue on toolgroupId1
+  segmentation.config.color.setColorForSegmentIndex(
+    toolGroupId1,
+    segmentationRepresentationToolGroupId1[0],
+    1,
+    [0, 0, 255, 255]
+  );
+  console.log("modification of segmentation's color done only on toolGroupId1");
+
+  colorValue1ToolGroup1SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId1,
+      segmentationRepresentationToolGroupId1[0],
+      1
+    );
+  colorValue2ToolGroup1SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId1,
+      segmentationRepresentationToolGroupId1[0],
+      2
+    );
+  colorValue1ToolGroup2SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId2,
+      segmentationRepresentationToolGroupId2[0],
+      1
+    );
+  colorValue2ToolGroup2SegRep1 =
+    segmentation.config.color.getColorForSegmentIndex(
+      toolGroupId2,
+      segmentationRepresentationToolGroupId2[0],
+      2
+    );
+  console.log(
+    'colors of segmentation representation 1 of toolGroupId1',
+    colorValue1ToolGroup1SegRep1,
+    colorValue2ToolGroup1SegRep1
+  );
+  console.log(
+    'colors of segmentation representation 1 of toolGroupId2',
+    colorValue1ToolGroup2SegRep1,
+    colorValue2ToolGroup2SegRep1
+  );
+
   renderingEngine.renderViewports([viewportId1, viewportId2]);
 }
 
